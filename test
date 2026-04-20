@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MYTI - 测测你的国际贸易人格</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 60px 24px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 首页样式 - 极简 */
+        .hero {
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .logo {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: #2563eb;
+            letter-spacing: 8px;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #000000;
+            font-weight: 400;
+            margin-top: 24px;
+            letter-spacing: 2px;
+        }
+
+        .divider {
+            width: 40px;
+            height: 2px;
+            background: #e5e7eb;
+            margin: 40px auto;
+        }
+
+        .start-btn {
+            display: inline-block;
+            padding: 16px 64px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #ffffff;
+            background: #2563eb;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 2px;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .tagline {
+            margin-top: 32px;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            letter-spacing: 1px;
+        }
+
+        /* 题目样式 */
+        .quiz-page {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+            flex: 1;
+        }
+
+        .quiz-page.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: #f3f4f6;
+            margin-bottom: 48px;
+            border-radius: 2px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        .question-num {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            font-weight: 500;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: #111827;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: #ffffff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .option:hover {
+            border-color: #2563eb;
+            background: #f8fafc;
+        }
+
+        .option.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #6b7280;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover .option-letter {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .option.selected .option-letter {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .option-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #374151;
+            padding-top: 4px;
+        }
+
+        .nav-btns {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .nav-btn {
+            padding: 12px 32px;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #374151;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+
+        .nav-btn.primary {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* 结果页 */
+        .result-page {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .result-page.active {
+            display: flex;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .result-type {
+            font-size: 1rem;
+            color: #2563eb;
+            font-weight: 600;
+            margin-bottom: 32px;
+            letter-spacing: 2px;
+        }
+
+        .result-desc {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            padding: 32px;
+            background: #f9fafb;
+            border-radius: 12px;
+            text-align: left;
+            color: #4b5563;
+            border: 1px solid #f3f4f6;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #f9fafb;
+            padding: 20px 12px;
+            border-radius: 8px;
+            border: 1px solid #f3f4f6;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: #2563eb;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .action-btn {
+            padding: 12px 28px;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #374151;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .restart-btn {
+            padding: 14px 48px;
+            border-radius: 4px;
+            border: none;
+            background: #111827;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 40px 20px; }
+            .logo { font-size: 3rem; letter-spacing: 4px; }
+            .subtitle { font-size: 1.1rem; }
+            .question-text { font-size: 1.15rem; }
+            .option { padding: 16px 20px; }
+            .result-stats { grid-template-columns: repeat(2, 1fr); }
+            .result-title { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 首页 -->
+        <div class="hero" id="homePage">
+            <div class="logo">MYTI</div>
+            <div class="subtitle">测测你的国际贸易人格</div>
+            <div class="divider"></div>
+            <button class="start-btn" onclick="startQuiz()">开始测试</button>
+            <div class="tagline">6 道题 · 约 2 分钟</div>
+        </div>
+
+        <!-- 题目页面 -->
+        <div class="quiz-page" id="quizPage">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            <div class="question-num" id="questionNum">QUESTION 1 / 6</div>
+            <div class="question-text" id="questionText"></div>
+            <div class="options" id="optionsContainer"></div>
+            <div class="nav-btns">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()" disabled>上一题</button>
+                <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()" disabled>下一题</button>
+            </div>
+        </div>
+
+        <!-- 结果页 -->
+        <div class="result-page" id="resultPage">
+            <div class="result-icon" id="resultIcon">🔋</div>
+            <div class="result-title" id="resultTitle"></div>
+            <div class="result-type" id="resultType"></div>
+            <div class="result-desc" id="resultDesc"></div>
+            <div class="result-stats" id="resultStats"></div>
+            <div class="result-actions">
+                <button class="action-btn" onclick="shareResult()">分享结果</button>
+                <button class="action-btn" onclick="copyLink()">复制链接</button>
+            </div>
+            <button class="restart-btn" onclick="restartQuiz()">再测一次</button>
+        </div>
+    </div>
+
+    <script>
+        var questions = [
+            {
+                id: 1,
+                text: "智利和刚果（金）家里有矿，但死活没变成电池强国。你觉得问题出在哪？",
+                options: [
+                    { letter: "A", text: "资源不是一切，有矿不代表该强", type: "realist" },
+                    { letter: "B", text: "缺技术，等专业的国家去开培训班就好了", type: "technocrat" },
+                    { letter: "C", text: "缺产业链、缺工程师、缺内卷，矿再大也白搭", type: "systemic" },
+                    { letter: "D", text: "多个原因共同导致，不能单选", type: "holistic" }
+                ]
+            },
+            {
+                id: 2,
+                text: "锂电池从日本→韩国→中国，像一场接力赛。你觉得最核心的动力是？",
+                options: [
+                    { letter: "A", text: "谁抢到矿谁赢", type: "resource" },
+                    { letter: "B", text: "技术老了不值钱了，自然往便宜的地方跑", type: "technocrat" },
+                    { letter: "C", text: "中国把“产业链+工程师+内卷”点满了", type: "systemic" },
+                    { letter: "D", text: "不同阶段的原因不一样", type: "holistic" }
+                ]
+            },
+            {
+                id: 3,
+                text: "中国成了全球电池老大，最关键的原因是什么？",
+                options: [
+                    { letter: "A", text: "中国矿也不少，内蒙古锂矿了解一下", type: "resource" },
+                    { letter: "B", text: "人多、工资低、能加班", type: "technocrat" },
+                    { letter: "C", text: "工程师红利+全产业链+宁德时代vs比亚迪内卷+全球最大新能源市场", type: "systemic" },
+                    { letter: "D", text: "补贴给得多，政策yyds", type: "holistic" }
+                ]
+            },
+            {
+                id: 4,
+                text: "美国搞《通胀削减法案》，结果最先冲过去建厂的是韩国公司。这说明什么？",
+                options: [
+                    { letter: "A", text: "美国自己不行，还得靠韩国", type: "resource" },
+                    { letter: "B", text: "补贴才是王道，谁给钱我去哪", type: "technocrat" },
+                    { letter: "C", text: "韩国企业本来就有技术和产能，补贴只是临门一脚", type: "systemic" },
+                    { letter: "D", text: "政策+技术+企业战略，缺一个都不行", type: "holistic" }
+                ]
+            },
+            {
+                id: 5,
+                text: "如果只能用一句话解释全球锂电池分工，你会选？",
+                options: [
+                    { letter: "A", text: "谁有矿谁说了算", type: "resource" },
+                    { letter: "B", text: "技术从创新到烂大街，产业就搬家", type: "technocrat" },
+                    { letter: "C", text: "要看生产要素、需求、产业链、企业竞争和政府", type: "systemic" },
+                    { letter: "D", text: "小孩子才做选择，我全都要", type: "holistic" }
+                ]
+            },
+            {
+                id: 6,
+                text: "如果印度想当下一个电池制造中心，你最想对它说？",
+                options: [
+                    { letter: "A", text: "先去找矿，没矿说个啥", type: "resource" },
+                    { letter: "B", text: "去韩国买技术，别自己从头搞", type: "technocrat" },
+                    { letter: "C", text: "先卷出几个像样的电池厂，别光靠政策吹牛", type: "systemic" },
+                    { letter: "D", text: "资源、技术、产业链、政策、内卷，一个都不能少", type: "holistic" }
+                ]
+            }
+        ];
+
+        var resultTypes = {
+            systemic: {
+                title: "产业链架构师",
+                icon: "🏭",
+                desc: "你对产业竞争的理解非常系统化。你明白电池产业不是单一因素的比拼，而是产业链、人才、市场、政策的多维竞争。你看到了中国崛起的底层逻辑——不是简单的“人多便宜”，而是工程师红利、完整供应链、头部企业内卷和巨大本土市场的共振。",
+                traits: ["系统思维", "产业洞察", "长期主义"]
+            },
+            holistic: {
+                title: "全局战略家",
+                icon: "🌍",
+                desc: "你倾向于从多维度、动态视角看问题。你明白产业转移是多种力量共同作用的结果，不同阶段主导因素不同。你既看到资源的重要性，也看到技术和政策的作用，更理解企业战略的价值。这种思维方式适合做产业分析或战略规划。",
+                traits: ["辩证思维", "战略视野", "动态分析"]
+            },
+            technocrat: {
+                title: "技术乐观派",
+                icon: "⚡",
+                desc: "你相信技术扩散和成本逻辑是产业迁移的核心动力。你看到了技术从创新到标准化的生命周期，以及由此带来的地缘转移。你可能低估了产业链集聚效应和制度环境的作用，但对技术演进的把握很敏锐。",
+                traits: ["技术敏感", "成本意识", "演进视角"]
+            },
+            resource: {
+                title: "资源原教旨",
+                icon: "⛏️",
+                desc: "你对原材料和上游资源给予极高权重。“家里有矿”是你的核心逻辑。虽然资源确实是产业基础，但你的视角可能需要升级——看看智利和刚果（金）就知道，有矿不等于有产业。产业链、技术和市场往往比资源更重要。",
+                traits: ["上游思维", "资源导向", "基础认知"]
+            },
+            realist: {
+                title: "清醒现实派",
+                icon: "🎯",
+                desc: "你打破了“资源决定论”的迷思，明白有矿不等于有产业。这种反直觉的认知很珍贵。你可能还在构建更完整的产业分析框架，但已经抓住了关键——产业竞争是综合实力的比拼，单一要素无法决定成败。",
+                traits: ["反直觉", "批判思维", "认知升级"]
+            }
+        };
+
+        var currentQuestion = 0;
+        var answers = [];
+
+        function startQuiz() {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('quizPage').classList.add('active');
+            answers = new Array(questions.length).fill(null);
+            currentQuestion = 0;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            var q = questions[currentQuestion];
+            document.getElementById('questionNum').textContent = 'QUESTION ' + (currentQuestion + 1) + ' / ' + questions.length;
+            document.getElementById('questionText').textContent = q.text;
+            document.getElementById('progressBar').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+
+            var container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            for (var i = 0; i < q.options.length; i++) {
+                var opt = q.options[i];
+                var div = document.createElement('div');
+                div.className = 'option';
+                if (answers[currentQuestion] === i) {
+                    div.classList.add('selected');
+                }
+
+                (function(index) {
+                    div.onclick = function() {
+                        selectOption(index);
+                    };
+                })(i);
+
+                div.innerHTML = '<div class="option-letter">' + opt.letter + '</div><div class="option-text">' + opt.text + '</div>';
+                container.appendChild(div);
+            }
+
+            document.getElementById('prevBtn').disabled = (currentQuestion === 0);
+            document.getElementById('nextBtn').disabled = (answers[currentQuestion] === null);
+            document.getElementById('nextBtn').textContent = (currentQuestion === questions.length - 1) ? '查看结果' : '下一题';
+        }
+
+        function selectOption(idx) {
+            answers[currentQuestion] = idx;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function calculateResult() {
+            var counts = {};
+            for (var i = 0; i < questions.length; i++) {
+                var type = questions[i].options[answers[i]].type;
+                counts[type] = (counts[type] || 0) + 1;
+            }
+
+            var maxType = 'systemic';
+            var maxCount = 0;
+            for (var t in counts) {
+                if (counts[t] > maxCount) {
+                    maxCount = counts[t];
+                    maxType = t;
+                }
+            }
+
+            if (counts['systemic'] && counts['holistic'] && 
+                counts['systemic'] === counts['holistic'] && 
+                counts['systemic'] === maxCount) {
+                maxType = 'systemic';
+            }
+
+            return { type: maxType, counts: counts };
+        }
+
+        function showResult() {
+            document.getElementById('quizPage').classList.remove('active');
+            document.getElementById('resultPage').classList.add('active');
+
+            var result = calculateResult();
+            var info = resultTypes[result.type];
+
+            document.getElementById('resultIcon').textContent = info.icon;
+            document.getElementById('resultTitle').textContent = info.title;
+            document.getElementById('resultType').textContent = result.type.toUpperCase() + ' 型';
+            document.getElementById('resultDesc').textContent = info.desc;
+
+            var stats = document.getElementById('resultStats');
+            stats.innerHTML = '';
+
+            var dims = [
+                { label: '系统思维', value: result.counts['systemic'] || 0 },
+                { label: '全局视野', value: result.counts['holistic'] || 0 },
+                { label: '技术导向', value: result.counts['technocrat'] || 0 },
+                { label: '资源意识', value: result.counts['resource'] || 0 }
+            ];
+
+            for (var j = 0; j < dims.length; j++) {
+                var card = document.createElement('div');
+                card.className = 'stat-card';
+                card.innerHTML = '<div class="stat-value">' + dims[j].value + '</div><div class="stat-label">' + dims[j].label + '</div>';
+                stats.appendChild(card);
+            }
+
+            window.shareText = '我在MYTI测试中获得了「' + info.title + '」称号！测测你的国际贸易人格吧！';
+        }
+
+        function shareResult() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'MYTI - 测测你的国际贸易人格',
+                    text: window.shareText,
+                    url: window.location.href
+                });
+            } else {
+                alert('请复制链接分享给朋友！');
+            }
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(function() {
+                alert('链接已复制到剪贴板！');
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = [];
+            document.getElementById('resultPage').classList.remove('active');
+            document.getElementById('homePage').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
